@@ -1,0 +1,83 @@
+#include <set>
+#include <map>
+#include <queue>
+#include <stack>
+#include <limits>
+#include <bitset>
+#include <time.h>
+#include <math.h>
+#include <vector>
+#include <string>
+#include <climits>
+#include <numeric>
+#include <assert.h>
+#include <iostream>
+#include <algorithm>
+#include <functional>
+#include <iomanip>
+#include <unordered_map>
+#define ll long long
+#define vi vector<int>
+#define vvi vector<vi>
+#define vvl vector<vl>
+#define pii pair<int,int>
+#define vl vector<long long>
+#define vii vector<pair<int,int>>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+inline ll gcd(ll a, ll b) { while (b != 0) swap(b, a %= b); return a; }
+
+
+void solve(){
+    int n; cin >> n;
+    string s; cin >> s;
+
+    int ans = 10000000;
+    vi a(n);
+    vi b(n);
+    for(char even = 'a'; even <= 'z'; even++){
+        for(char odd = 'a'; odd <= 'z'; odd++){
+            for(int i = 0; i < n; i++) {
+                if(i % 2 == 0){
+                    a[i] = (i != 0 ? a[i - 1] : 0) + (s[i] != even); 
+                }else{
+                    a[i] = (i != 0 ? a[i - 1] : 0) + (s[i] != odd); 
+                }
+            }
+            // cout << "a: ";
+            // for(auto x : a) cout << x << " ";
+            // cout << "\n";
+            
+            if(n % 2 == 0) { ans = min(ans, a[n -1]); continue; }
+
+            for(int i = n - 1; i >= 0; i--) {
+                if(i % 2 == 0){
+                    b[i] = (i != n - 1 ? b[i + 1] : 0) + (s[i] != odd); 
+                }else{
+                    b[i] = (i != n - 1 ? b[i + 1] : 0) + (s[i] != even); 
+                }
+            }
+            // cout << "b: ";
+            // for(auto x : b) cout << x << " ";
+            // cout << "\n";
+
+            int res = 1000000;
+            for(int i = 0; i < n; i++){
+                res = min(res, (i != 0 ? a[i - 1] : 0) + (i != n - 1 ? b[i + 1] : 0));
+            }
+            ans = min(ans, res + 1);
+        }
+    }
+    cout << ans << "\n";
+}
+
+signed main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    int tt; cin >> tt;
+    while(tt--) solve();    
+    return 0;
+}

@@ -1,0 +1,35 @@
+# Archivos de configuración de VSCode
+.vscode/
+.cph
+
+# Binarios ejecutables comunes (Linux, Mac, Windows)
+*.exe
+*.out
+*.o
+*.obj
+*.class
+
+# Archivos de prueba (input/output)
+*.in
+*.out
+*.txt
+*.sh
+
+# Archivos comprimidos
+*.zip
+
+# Archivos de log y temporales
+*.log
+*.tmp
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno/virtualenvs
+.env
+.venv/
+
+
+/extra
+/extra

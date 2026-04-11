@@ -1,0 +1,112 @@
+#include<bits/stdc++.h>
+#define all(x) begin(x),end(x)
+#define sz(x) (int)(x).size()
+#define rep(i,a,b) for(int i = (a) ; i < (b) ; i++)
+
+using namespace ::std;
+using ll = long long;
+typedef vector<int> vi;
+typedef vector<ll> vl;
+typedef pair<int , int> pii;
+typedef vector<pii> vii;
+
+struct elem{
+    int ans; 
+};
+
+const int N = 2e5 + 5;
+int col[N];
+elem E() { return {0}; }
+elem take_vertex(elem DP, int v) {
+    int ret = DP.ans;
+    if(col[v]){
+        ret++;
+        return { max(1, ret) };
+    }
+    else{
+        ret--;
+        return { max(-1, ret) };
+    }
+}
+
+elem up_root(elem DP, int e) { return DP; }
+elem merge(elem u, elem v) { 
+    int ret = 0;
+    if(u.ans > 0) ret += u.ans;
+    if(v.ans > 0) ret += v.ans;
+    return { ret };
+}
+
+void dfs(int x, vector<vector<pii>> &gph, vector<int> &ord, vector<int> &pae) {
+	ord.push_back(x);
+	for (auto &[i, y] : gph[x]) {
+		gph[y].erase(find(all(gph[y]), pii{i ^ 1, x}));
+		pae[y] = (i ^ 1);
+		dfs(y, gph, ord, pae);
+	}
+}
+
+vector<elem> solve(int n, vector<pii> edges) {
+	vector<vector<pii>> gph(n);
+	gph.resize(n);
+	for (int i = 0; i < n - 1; i++) {
+		gph[edges[i].first].push_back({2 * i, edges[i].second});
+		gph[edges[i].second].push_back({2 * i + 1, edges[i].first});
+	}
+	vector<int> ord;
+	vector<int> pae(n, -1);
+	dfs(0, gph, ord, pae);
+	vector<elem> dp(n, E());
+	reverse(all(ord));
+	for (auto &z : ord) {
+		for (auto &[i, y] : gph[z]) {
+			dp[z] = merge(dp[z], up_root(dp[y], i));
+		}
+		dp[z] = take_vertex(dp[z], z);
+	}
+	vector<elem> rev_dp(n, E());
+	reverse(all(ord));
+	for (auto &z : ord) {
+		vector<elem> pref(sz(gph[z]) + 1, E());
+		vector<elem> suff(sz(gph[z]) + 1, E());
+		if (~pae[z])
+			pref[0] = up_root(rev_dp[z], pae[z]);
+		for (int i = 0; i < sz(gph[z]); i++) {
+			pref[i + 1] = suff[i] = up_root(dp[gph[z][i].second], gph[z][i].first);
+		}
+		for (int i = 1; i <= sz(gph[z]); i++)
+			pref[i] = merge(pref[i - 1], pref[i]);
+		for (int i = sz(gph[z]) - 1; i >= 0; i--)
+			suff[i] = merge(suff[i], suff[i + 1]);
+		for (int i = 0; i < sz(gph[z]); i++) {
+			rev_dp[gph[z][i].second] = take_vertex(merge(pref[i], suff[i + 1]), z);
+		}
+	}
+	vector<elem> sln(n, E());
+	for (int x = 0; x < n; x++) {
+		if (~pae[x])
+			sln[x] = up_root(rev_dp[x], pae[x]);
+		for (auto &[i, y] : gph[x]) {
+			sln[x] = merge(sln[x], up_root(dp[y], i));
+		}
+		sln[x] = take_vertex(sln[x], x);
+	}
+	return sln;
+}
+
+int main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    int n; cin >> n;
+    rep(i, 0, n) cin >> col[i];
+    vii edges;
+    rep(i, 0, n - 1){
+        int u, v; cin >> u >> v;
+        u--; v--;
+        edges.emplace_back(u, v);
+    }
+
+    auto ans = solve(n, edges);
+    rep(i, 0, n) cout << ans[i].ans << " "; cout << "\n";
+}

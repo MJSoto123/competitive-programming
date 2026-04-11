@@ -1,0 +1,17 @@
+8 6
+
+7
+
+draw 0 6 3 3
+
+draw 4 3 2 2
+
+shrink 0 6 2 2
+
+remove 4 3 2 2
+
+extend 0 6 7 7
+
+shrink 0 6 4 4
+
+shrink 0 6 1 1

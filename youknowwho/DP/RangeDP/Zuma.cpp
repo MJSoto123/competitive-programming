@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+#define all(x) begin(x),end(x)
+#define sz(x) (int)(x).size()
+#define rep(i,a,b) for(int i = (a) ; i < (b) ; i++)
+
+using namespace ::std;
+using ll = long long;
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef vector<ll> vl;
+typedef pair<int , int> pii;
+typedef vector<pii> vii;
+
+const int inf = 1e6;
+int main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
+    int n; cin >> n;
+    vi a(n);
+    rep(i, 0, n) cin >> a[i];
+
+    vvi dp(n, vi(n, inf));
+    rep(i, 0, n) dp[i][i] = 1;
+    rep(i, 0, n - 1) if(a[i] == a[i + 1]) dp[i][i + 1] = 1;
+
+    rep(len, 2, n + 1){
+        rep(l, 0, n){
+            int r = l + len - 1;
+            if(r >= n) continue;
+            if(l + 1 <= r) dp[l][r] = min(dp[l][r], 1 + dp[l + 1][r]);
+            if(l + 2 <= r && a[l] == a[l + 1])  dp[l][r] = min(dp[l][r], 1 + dp[l + 2][r]);
+            if(a[l] == a[r] && l + 1 <= r - 1) dp[l][r] = min(dp[l][r], dp[l + 1][r - 1]);
+
+            rep(k, l + 2, r){
+                if(a[l] == a[k]){
+                    dp[l][r] = min(dp[l][r], dp[l + 1][k - 1] + dp[k + 1][r]);
+                }
+            }
+        }
+    }
+
+    cout << dp[0][n - 1] << "\n";
+}
