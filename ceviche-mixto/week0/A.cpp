@@ -10,34 +10,31 @@ typedef vector<ll> vl;
 typedef pair<int , int> pii;
 typedef vector<pii> vii;
 
-const ll fix = 1e7;
-
-double rad(double angle){
-    return angle / 180.0 * acos(-1);
-}
-
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
 
     cout << fixed << setprecision(3);
     double len, n, c;
+
     while(true){
         cin >> len >> n >> c;
-        if(len == -1) break;
+        if(len < 0) break;
+        if(n == 0 || c == 0){ cout << 0.0 << "\n"; continue; }
 
         double len2 = (1.0 + n * c);
-        ll l = 0 * fix, r = 90 * fix;
-        while(r - l > 1){
-            ll mid = l + r >> 1;
-            double angle = rad((1.0 * mid) / (1.0 * fix));
+        double l = 0, r = acos(-1);
 
-            double cur = angle * (1 / sin(angle));
+        // anotao
+        rep(i, 0, 69){ 
+            double mid = (l + r) / 2.0;
+            double cur = mid / sin(mid);
+
             if(cur > len2) r = mid;
             else l = mid;
-        }
-
-        double angle = rad((1.0 * l) / (1.0 * fix)) / 2.0;
+        } 
+        
+        double angle = l / 2.0;
         double ans = (len / 2.0) * (sin(angle) / cos(angle));
         cout << ans << "\n";
     }   
