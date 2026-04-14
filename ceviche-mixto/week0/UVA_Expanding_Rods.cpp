@@ -24,7 +24,6 @@ int main(){
 
         double len2 = (1.0 + n * c);
         double l = 0, r = acos(-1);
-        ll l = 0, r = 180;
 
         // anotao
         rep(i, 0, 69){
