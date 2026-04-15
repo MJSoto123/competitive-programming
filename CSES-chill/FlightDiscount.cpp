@@ -11,16 +11,15 @@ typedef vector<ll> vl;
 typedef pair<ll , ll> pii;
 typedef vector<pii> vii;
 
-vl Djsktra(vector<vii> g, int n, int src){
+vl Djsktra(vector<vii> &g, int n, int src){
     vl d(n + 1, 1e18);
     priority_queue<pii, vii, greater<pii>> q;
     d[src] = 0;
-    q.emplace(d[src], src); 
+    q.emplace(d[src], src);
 
     while(sz(q)){
         auto [dist, u] = q.top(); q.pop();
         if(dist > d[u]) continue;
-
         for(auto [v, w] : g[u]){
             if(d[u] + w < d[v]){
                 d[v] = d[u] + w;
@@ -29,15 +28,15 @@ vl Djsktra(vector<vii> g, int n, int src){
         }
     }
     return d;
-};
+}
 
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
 
     int n, m; cin >> n >> m;
-    vector<vii> g(n + 1);
-    vector<vii> g2(n + 1);
+    vector<vii> g(n + 1), g2(n + 1);
+
     rep(i, 0, m){
         int u, v, w; cin >> u >> v >> w;
         g[u].emplace_back(v, w);
@@ -47,12 +46,14 @@ int main(){
     vl d1 = Djsktra(g, n, 1);
     vl d2 = Djsktra(g2, n, n);
 
-    // dbg(d1); 
+    // dbg(d1);
     // dbg(d2);
 
     ll ans = 5e18;
-    for(int u = 1; u <= n; u++){
-        for(auto [v, w] : g[u]) ans = min(ans, d1[u] + w / 2 + d2[v]);
+    rep(u, 1, n + 1){
+        for(auto [v, w] : g[u]){
+            ans = min(ans, d1[u] + w / 2 + d2[v]);
+        }
     }
     cout << ans << "\n";
 }
